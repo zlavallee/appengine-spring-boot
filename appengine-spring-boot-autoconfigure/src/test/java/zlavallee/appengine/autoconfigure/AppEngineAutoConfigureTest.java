@@ -23,7 +23,6 @@ class AppEngineAutoConfigureTest {
 
   private final WebApplicationContextRunner contextRunner = new WebApplicationContextRunner()
       .withConfiguration(AutoConfigurations.of(
-          CoreAppEngineConfiguration.class,
           LocalAppEngineConfiguration.class,
           CloudAppEngineConfiguration.class,
           AppEngineConfiguration.class,
@@ -43,7 +42,7 @@ class AppEngineAutoConfigureTest {
   }
 
   @Test
-  @Disabled
+//  @Disabled
   public void testCloudCoreConfiguration() {
     contextRunner.withPropertyValues(property(APPLICATION_ID_KEY, "applicationId"))
         .run(context -> {

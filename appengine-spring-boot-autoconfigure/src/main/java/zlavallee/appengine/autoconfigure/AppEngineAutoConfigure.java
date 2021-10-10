@@ -1,5 +1,7 @@
 package zlavallee.appengine.autoconfigure;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -18,6 +20,8 @@ import zlavallee.appengine.core.AppEngineSettingsImpl;
 })
 public class AppEngineAutoConfigure {
 
+  private static final Logger logger = LoggerFactory.getLogger(AppEngineAutoConfigure.class);
+
   @Autowired
   private AppEngineEnvironment appEngineEnvironment;
   @Autowired
@@ -25,6 +29,7 @@ public class AppEngineAutoConfigure {
 
   @Bean
   public AppEngineSettings appEngineSettings() {
+    logger.debug("Creating app engine settings bean.");
     return new AppEngineSettingsImpl(appEngineEnvironment, appEngineApplicationService);
   }
 }
