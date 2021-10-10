@@ -1,0 +1,13 @@
+dependencies {
+    implementation project(':appengine-spring-boot-starter')
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+    implementation 'com.google.cloud:google-cloud-tasks'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+}
+

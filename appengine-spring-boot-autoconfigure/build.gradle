@@ -1,0 +1,10 @@
+dependencies {
+    implementation project(':appengine-spring-boot-core')
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    implementation 'com.google.apis:google-api-services-appengine'
+    implementation 'com.google.auth:google-auth-library-oauth2-http'
+
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    implementation 'com.google.apis:google-api-services-appengine'
+}

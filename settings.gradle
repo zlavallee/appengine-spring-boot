@@ -1,0 +1,8 @@
+rootProject.name = 'appengine-spring-boot'
+include 'appengine-spring-boot-core'
+include 'appengine-spring-boot-autoconfigure'
+include 'appengine-spring-boot-starter'
+include 'appengine-spring-boot-tasks-core'
+include 'appengine-spring-boot-autoconfigure-tasks'
+include 'appengine-spring-boot-starter-tasks'
+

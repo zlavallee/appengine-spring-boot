@@ -1,0 +1,10 @@
+dependencies {
+    api project(':appengine-spring-boot-core')
+    api project(':appengine-spring-boot-autoconfigure')
+
+    api 'com.google.apis:google-api-services-appengine'
+    api 'com.google.auth:google-auth-library-oauth2-http'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+}

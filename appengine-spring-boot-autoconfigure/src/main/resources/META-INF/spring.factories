@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  zlavallee.appengine.autoconfigure.CloudAppEngineConfiguration,\
+  zlavallee.appengine.autoconfigure.LocalAppEngineConfiguration,\
+  zlavallee.appengine.autoconfigure.AppEngineAutoConfigure,\
+  zlavallee.appengine.autoconfigure.AppEngineConfiguration

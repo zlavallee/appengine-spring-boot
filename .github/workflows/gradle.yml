@@ -1,0 +1,35 @@
+name: App Engine Spring Boot CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Set up JDK 11
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'adopt'
+        cache: gradle
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Test
+      run: ./gradlew test --info --stacktrace
+    - name: Publish
+      run: |
+        git config --global user.name 'Github Actions'
+        git config --global user.email 'github-actions@users.noreply.github.com'
+        ./gradlew -Dorg.ajoberstar.grgit.auth.username='${{ env.GITHUB_ACTOR }}' -Dorg.ajoberstar.grgit.auth.password='${{ env.GITHUB_TOKEN }}' candidate publish --info --stacktrace
+      env:
+        GITHUB_ACTOR: zlavallee
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

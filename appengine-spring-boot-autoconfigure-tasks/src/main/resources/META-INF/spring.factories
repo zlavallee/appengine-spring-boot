@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  zlavallee.appengine.tasks.autoconfigure.CloudTasksAutoConfiguration,\
+  zlavallee.appengine.tasks.autoconfigure.CloudTasksConfiguration,\
+  zlavallee.appengine.tasks.autoconfigure.CloudTasksCoreConfiguration, \
+  zlavallee.appengine.tasks.autoconfigure.LocalTasksConfiguration

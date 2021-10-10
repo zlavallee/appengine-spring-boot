@@ -1,0 +1,76 @@
+plugins {
+    id 'org.springframework.boot' version '2.5.5' apply false
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+    id 'idea'
+    id 'nebula.release' version '16.0.0'
+    id 'nebula.javadoc-jar' version '18.0.0'
+    id 'nebula.source-jar' version '16.0.0'
+    id 'nebula.maven-publish' version '17.0.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencyManagement {
+    imports {
+        mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+    }
+}
+
+subprojects {
+    group 'io.github.zlavallee'
+
+    apply plugin: 'nebula.release'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java-library'
+    apply plugin: 'nebula.release'
+    apply plugin: 'nebula.javadoc-jar'
+    apply plugin: 'nebula.source-jar'
+    apply plugin: 'nebula.maven-publish'
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_11
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+        }
+        dependencies {
+            dependency 'com.google.apis:google-api-services-appengine:v1-rev20210918-1.32.1'
+            dependency 'com.google.cloud:google-cloud-tasks:2.0.5'
+            dependency 'com.google.auth:google-auth-library-oauth2-http:1.1.0'
+        }
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'org.junit.jupiter:junit-jupiter-api'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    }
+
+    publishing {
+        repositories {
+            maven {
+                url = 'https://maven.pkg.github.com/zlavallee/appengine-cloud-tasks-spring-boot'
+                credentials {
+                    username = System.getenv('GITHUB_ACTOR')
+                    password = System.getenv('GITHUB_TOKEN')
+                }
+            }
+        }
+    }
+}
