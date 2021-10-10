@@ -42,7 +42,7 @@ class AppEngineAutoConfigureTest {
   }
 
   @Test
-//  @Disabled
+  @Disabled
   public void testCloudCoreConfiguration() {
     contextRunner.withPropertyValues(property(APPLICATION_ID_KEY, "applicationId"))
         .run(context -> {
