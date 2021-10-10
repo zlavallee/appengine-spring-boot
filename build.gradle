@@ -65,7 +65,7 @@ subprojects {
     publishing {
         repositories {
             maven {
-                url = 'https://maven.pkg.github.com/zlavallee/appengine-cloud-tasks-spring-boot'
+                url = 'https://maven.pkg.github.com/zlavallee/appengine-spring-boot'
                 credentials {
                     username = System.getenv('GITHUB_ACTOR')
                     password = System.getenv('GITHUB_TOKEN')
