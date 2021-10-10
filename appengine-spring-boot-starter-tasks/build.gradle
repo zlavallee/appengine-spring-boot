@@ -1,6 +1,7 @@
 dependencies {
     api project(':appengine-spring-boot-starter')
     api project(':appengine-spring-boot-autoconfigure-tasks')
+    api project(':appengine-spring-boot-tasks-core')
 
     api 'org.springframework.boot:spring-boot-starter-web'
     api 'com.google.cloud:google-cloud-tasks'
