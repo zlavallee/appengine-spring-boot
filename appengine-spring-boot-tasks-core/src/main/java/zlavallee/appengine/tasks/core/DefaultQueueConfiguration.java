@@ -72,6 +72,10 @@ public class DefaultQueueConfiguration implements QueueConfiguration {
 
   public void setCloudTaskQueueConfigurationMap(
       Map<String, CloudTaskQueueConfiguration> cloudTaskQueueConfigurationMap) {
+    if (cloudTaskQueueConfigurationMap == null) {
+      return;
+    }
+
     this.cloudTaskQueueConfigurationMap = cloudTaskQueueConfigurationMap;
   }
 
