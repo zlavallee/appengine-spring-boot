@@ -21,15 +21,12 @@ public class CloudTasksAutoConfiguration {
 
   private final CloudTasksConfigurationProperties cloudTasksConfigurationProperties;
   private final RequestMappingHandlerMapping requestMappingHandlerMapping;
-  private final ListableBeanFactory listableBeanFactory;
 
   public CloudTasksAutoConfiguration(
       CloudTasksConfigurationProperties cloudTasksConfigurationProperties,
-      RequestMappingHandlerMapping requestMappingHandlerMapping,
-      ListableBeanFactory listableBeanFactory) {
+      RequestMappingHandlerMapping requestMappingHandlerMapping) {
     this.cloudTasksConfigurationProperties = cloudTasksConfigurationProperties;
     this.requestMappingHandlerMapping = requestMappingHandlerMapping;
-    this.listableBeanFactory = listableBeanFactory;
   }
 
   @Bean
@@ -41,7 +38,7 @@ public class CloudTasksAutoConfiguration {
 
   @Bean
   public TaskDelegator taskDelegator() {
-    return new TaskDelegator(listableBeanFactory);
+    return new TaskDelegator();
   }
 
   @Bean

@@ -1,17 +1,19 @@
 package zlavallee.appengine.tasks.core;
 
 import java.util.concurrent.ConcurrentHashMap;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.ResolvableType;
 import zlavallee.appengine.tasks.core.exception.TaskDelegationException;
 
-public class TaskDelegator {
+public class TaskDelegator implements ApplicationContextAware {
 
-  private final ListableBeanFactory beanFactory;
+  private ListableBeanFactory beanFactory;
   private final ConcurrentHashMap<Class<?>, TaskExecutor<?>> cachedExecutors = new ConcurrentHashMap<>();
 
-  public TaskDelegator(ListableBeanFactory beanFactory) {
-    this.beanFactory = beanFactory;
+  public TaskDelegator() {
   }
 
   public <T> void delegate(T payload) {
@@ -55,5 +57,10 @@ public class TaskDelegator {
     return ResolvableType.forClassWithGenerics(
         TaskExecutor.class,
         ResolvableType.forClass(payload.getClass()));
+  }
+
+  @Override
+  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    this.beanFactory = applicationContext;
   }
 }

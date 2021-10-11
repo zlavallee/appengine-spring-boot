@@ -25,7 +25,7 @@ public abstract class AbstractBaseTaskSubmissionService implements TaskSubmissio
     }
 
     logger.info("Submitting task to url: {}", task.getSubmissionUrl());
-    
+
     submitTask(task);
 
     logger.trace("Task submitted successfully. {}", payload);

@@ -74,8 +74,8 @@ public class TaskDelegatorTest {
   static class TaskDelegatorTestConfiguration {
 
     @Bean
-    public TaskDelegator taskDelegator(ApplicationContext applicationContext) {
-      return new TaskDelegator(applicationContext);
+    public TaskDelegator taskDelegator() {
+      return new TaskDelegator();
     }
 
     @Bean
