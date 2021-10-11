@@ -17,9 +17,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import zlavallee.anotherpackage.TestPayloadThree;
 import zlavallee.appengine.tasks.core.TaskDelegatorTest.TaskDelegatorTestConfiguration;
 import zlavallee.appengine.tasks.core.exception.TaskDelegationException;
 import zlavallee.appengine.tasks.core.payload.TestPayloadOne;
+import zlavallee.appengine.tasks.core.payload.TestPayloadTwo;
 
 @SpringBootTest
 @EnableAutoConfiguration
@@ -27,9 +29,9 @@ import zlavallee.appengine.tasks.core.payload.TestPayloadOne;
 public class TaskDelegatorTest {
 
   @Autowired
-  private TestTaskExecutor<String> stringTaskExecutor;
+  private TestTaskExecutor<TestPayloadTwo> testPayloadTwoTestTaskExecutor;
   @Autowired
-  private TestTaskExecutor<Date> dateTaskExecutor;
+  private TestTaskExecutor<TestPayloadThree> testPayloadThreeTestTaskExecutor;
   @Autowired
   private TaskDelegator taskDelegator;
   @Autowired
@@ -37,8 +39,8 @@ public class TaskDelegatorTest {
 
   @AfterEach
   public void tearDown() {
-    this.stringTaskExecutor.clear();
-    this.dateTaskExecutor.clear();
+    this.testPayloadTwoTestTaskExecutor.clear();
+    this.testPayloadThreeTestTaskExecutor.clear();
   }
 
   @Test
@@ -48,24 +50,24 @@ public class TaskDelegatorTest {
     assertEquals(1, concreteExecutor.payloads.size());
     assertEquals(new TestPayloadOne("message"), concreteExecutor.payloads.get(0));
 
-    Date date = new Date();
+    TestPayloadTwo testPayloadTwo = new TestPayloadTwo();
 
-    taskDelegator.delegate(date);
+    taskDelegator.delegate(testPayloadTwo);
 
     assertEquals(1, concreteExecutor.payloads.size());
-    assertEquals(1, dateTaskExecutor.payloads.size());
-    assertEquals(date, dateTaskExecutor.payloads.get(0));
+    assertEquals(1, testPayloadTwoTestTaskExecutor.payloads.size());
+    assertEquals(testPayloadTwo, testPayloadTwoTestTaskExecutor.payloads.get(0));
   }
 
   @Test
   public void testDelegateNoExecutor() {
     TaskDelegationException exception = assertThrows(TaskDelegationException.class, () -> {
-      taskDelegator.delegate(1.0f);
+      taskDelegator.delegate(new UnRegisteredExecutor());
     });
 
     assertThat(exception.getMessage(), containsString("No executor found"));
   }
-  
+
   @Configuration
   static class TaskDelegatorTestConfiguration {
 
@@ -75,18 +77,13 @@ public class TaskDelegatorTest {
     }
 
     @Bean
-    public TestTaskExecutor<String> stringTaskExecutor() {
-      return new TestTaskExecutor<>(String.class);
+    public TestTaskExecutor<TestPayloadTwo> payloadTwoTestTaskExecutor() {
+      return new TestTaskExecutor<>(TestPayloadTwo.class);
     }
 
     @Bean
-    public TestTaskExecutor<Date> dateTaskExecutor() {
-      return new TestTaskExecutor<>(Date.class);
-    }
-
-    @Bean
-    public TestTaskExecutor<Integer> firstIntegerTaskExecutor() {
-      return new TestTaskExecutor<>(Integer.class);
+    public TestTaskExecutor<TestPayloadThree> payloadThreeTestTaskExecutor() {
+      return new TestTaskExecutor<>(TestPayloadThree.class);
     }
 
     @Bean
@@ -131,4 +128,7 @@ public class TaskDelegatorTest {
       this.payloads.clear();
     }
   }
+
+  @Payload(taskName = "unRegisteredExecutor")
+  static class UnRegisteredExecutor {}
 }

@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import zlavallee.anotherpackage.TestPayloadThree;
+import zlavallee.appengine.tasks.core.TaskDelegatorTest.UnRegisteredExecutor;
 import zlavallee.appengine.tasks.core.payload.TestPayloadOne;
 import zlavallee.appengine.tasks.core.payload.TestPayloadTwo;
 
@@ -26,9 +27,9 @@ public class ClasspathScanningTaskPayloadProcessorTest {
   public void testFindPayloadClasses() {
     Collection<Class<?>> classes = processor.findPayloadClasses();
 
-    assertEquals(3, classes.size());
+    assertEquals(4, classes.size());
     assertThat(classes, containsInAnyOrder(TestPayloadOne.class, TestPayloadTwo.class,
-        TestPayloadThree.class));
+        TestPayloadThree.class, UnRegisteredExecutor.class));
   }
 
   @Configuration

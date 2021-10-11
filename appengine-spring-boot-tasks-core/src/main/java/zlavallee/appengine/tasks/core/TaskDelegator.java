@@ -12,12 +12,12 @@ public class TaskDelegator {
 
   private static final Logger logger = LoggerFactory.getLogger(TaskDelegator.class);
 
-  private final Map<Class<?>, TaskExecutor<?>> taskExecutorMap;
+  private final Map<String, TaskExecutor<?>> taskExecutorMap;
 
   public TaskDelegator(Set<TaskExecutor<?>> taskExecutors) {
     logger.debug("Registering task executors: {}", taskExecutors);
     taskExecutorMap = taskExecutors.stream()
-        .collect(Collectors.toMap(TaskExecutor::getPayloadClass, Function.identity()));
+        .collect(Collectors.toMap(TaskExecutor::getTaskName, Function.identity()));
     taskExecutorMap.forEach(
         (key, value) -> logger.trace("Registered executor {} for payload class {}", value, key));
   }
@@ -42,10 +42,12 @@ public class TaskDelegator {
 
   @SuppressWarnings("unchecked")
   private <T> TaskExecutor<T> getTaskExecutor(T payload) {
-    if (!taskExecutorMap.containsKey(payload.getClass())) {
+    String taskName = new PayloadMetadata(payload.getClass()).getTaskName();
+
+    if (!taskExecutorMap.containsKey(taskName)) {
       throw new TaskDelegationException("No executor found for type: " + payload.getClass());
     }
 
-    return (TaskExecutor<T>) taskExecutorMap.get(payload.getClass());
+    return (TaskExecutor<T>) taskExecutorMap.get(taskName);
   }
 }
