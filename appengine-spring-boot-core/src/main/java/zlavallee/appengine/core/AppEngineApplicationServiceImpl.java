@@ -46,7 +46,7 @@ public class AppEngineApplicationServiceImpl implements AppEngineApplicationServ
   }
 
   private Application getApplicationFromApi() {
-    return appEngineAdmin.getApplication(appEngineEnvironment.applicationId());
+    return appEngineAdmin.getApplication(appEngineEnvironment.projectId());
   }
 
   public void setCacheResponse(boolean cacheResponse) {
