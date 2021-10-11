@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Import;
 import zlavallee.appengine.autoconfigure.condition.ConditionalOnAppEngine;
 import zlavallee.appengine.tasks.core.CloudTasksSubmissionService;
 import zlavallee.appengine.tasks.core.DefaultGoogleCloudCreateTask;
-import zlavallee.appengine.tasks.core.GoogleCloudCreateTask;
 import zlavallee.appengine.tasks.core.QueueConfiguration;
 import zlavallee.appengine.tasks.core.TaskSubmissionService;
 
@@ -21,29 +20,22 @@ import zlavallee.appengine.tasks.core.TaskSubmissionService;
 public class CloudTasksConfiguration {
 
   private final CloudTasksConfigurationProperties cloudTasksConfigurationProperties;
-  private final CloudTasksClient cloudTasksClient;
   private final QueueConfiguration queueConfiguration;
 
   public CloudTasksConfiguration(
       CloudTasksConfigurationProperties cloudTasksConfigurationProperties,
-      CloudTasksClient cloudTasksClient,
       QueueConfiguration queueConfiguration) {
     this.cloudTasksConfigurationProperties = cloudTasksConfigurationProperties;
-    this.cloudTasksClient = cloudTasksClient;
     this.queueConfiguration = queueConfiguration;
   }
 
   @Bean
-  public TaskSubmissionService cloudTasksSubmissionService() {
+  public TaskSubmissionService cloudTasksSubmissionService(
+      CloudTasksClient cloudTasksClient) {
     return new CloudTasksSubmissionService(
         cloudTasksConfigurationProperties.getUriBase(),
-        googleCloudCreateTask(),
+        new DefaultGoogleCloudCreateTask(cloudTasksClient),
         queueConfiguration);
-  }
-
-  @Bean
-  public GoogleCloudCreateTask googleCloudCreateTask() {
-    return new DefaultGoogleCloudCreateTask(cloudTasksClient);
   }
 
   @Bean
