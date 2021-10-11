@@ -24,7 +24,7 @@ class AppEngineApplicationServiceImplTest {
     this.appEngineAdmin = mock(AppEngineAdmin.class);
     AppEngineEnvironment appEngineEnvironment = new AppEngineEnvironment(
         new MockEnvironment().withProperty(
-            AppEngineEnvironment.APPLICATION_ID_KEY, "applicationId"
+            AppEngineEnvironment.GCP_PROJECT_ID_KEY, "projectId"
         )
     );
     this.appEngineApplicationService = new AppEngineApplicationServiceImpl(
@@ -33,27 +33,27 @@ class AppEngineApplicationServiceImplTest {
 
   @Test
   public void testWithCache() {
-    doReturn(new Application()).when(appEngineAdmin).getApplication("applicationId");
+    doReturn(new Application()).when(appEngineAdmin).getApplication("projectId");
 
     Optional<Application> application = appEngineApplicationService.getCurrentApplication();
     assertTrue(application.isPresent());
     application = appEngineApplicationService.getCurrentApplication();
     assertTrue(application.isPresent());
 
-    verify(appEngineAdmin, times(1)).getApplication("applicationId");
+    verify(appEngineAdmin, times(1)).getApplication("projectId");
   }
 
   @Test
   public void testNoCache() {
     appEngineApplicationService.setCacheResponse(false);
 
-    doReturn(new Application()).when(appEngineAdmin).getApplication("applicationId");
+    doReturn(new Application()).when(appEngineAdmin).getApplication("projectId");
 
     Optional<Application> application = appEngineApplicationService.getCurrentApplication();
     assertTrue(application.isPresent());
     application = appEngineApplicationService.getCurrentApplication();
     assertTrue(application.isPresent());
 
-    verify(appEngineAdmin, times(2)).getApplication("applicationId");
+    verify(appEngineAdmin, times(2)).getApplication("projectId");
   }
 }
