@@ -23,6 +23,18 @@ public class TaskDelegator {
   }
 
   public <T> void delegate(T payload) {
+    Class<?> payloadClass = payload.getClass();
+    logger.trace("Finding executor for class: {}", payloadClass);
+    logger.trace("Payload class hashcode: {}", payloadClass.hashCode());
+    logger.trace("Payload class second hashcode: {}", payloadClass.hashCode());
+
+    taskExecutorMap.forEach((aClass, taskExecutor) -> {
+      logger.trace("Registered class: {}", aClass);
+      logger.trace("Registered payload class hashcode: {}", aClass.hashCode());
+      logger.trace("Registered payload class second hashcode: {}", aClass.hashCode());
+      logger.trace("Equal: {}", payload.equals(aClass));
+    });
+
     TaskExecutor<T> executor = getTaskExecutor(payload);
 
     executor.execute(payload);
