@@ -6,9 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,8 +70,8 @@ public class TaskDelegatorTest {
   static class TaskDelegatorTestConfiguration {
 
     @Bean
-    public TaskDelegator taskDelegator(Set<TaskExecutor<?>> taskExecutors) {
-      return new TaskDelegator(taskExecutors);
+    public TaskDelegator taskDelegator() {
+      return new ApplicationContextTaskDelegator();
     }
 
     @Bean
@@ -130,5 +128,7 @@ public class TaskDelegatorTest {
   }
 
   @Payload(taskName = "unRegisteredExecutor")
-  static class UnRegisteredExecutor {}
+  static class UnRegisteredExecutor {
+
+  }
 }

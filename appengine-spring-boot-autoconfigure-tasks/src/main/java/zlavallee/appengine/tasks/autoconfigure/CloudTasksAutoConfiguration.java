@@ -1,13 +1,13 @@
 package zlavallee.appengine.tasks.autoconfigure;
 
 import java.util.Set;
-import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import zlavallee.appengine.tasks.core.ApplicationContextTaskDelegator;
 import zlavallee.appengine.tasks.core.ClasspathScanningTaskPayloadProcessor;
 import zlavallee.appengine.tasks.core.TaskControllerRegister;
 import zlavallee.appengine.tasks.core.TaskDelegator;
@@ -39,15 +39,15 @@ public class CloudTasksAutoConfiguration {
   }
 
   @Bean
-  public TaskDelegator taskDelegator(Set<TaskExecutor<?>> taskExecutors) {
-    return new TaskDelegator(taskExecutors);
+  public TaskDelegator taskDelegator() {
+    return new ApplicationContextTaskDelegator();
   }
 
   @Bean
-  public TaskControllerRegister taskControllerRegister(Set<TaskExecutor<?>> taskExecutors) {
+  public TaskControllerRegister taskControllerRegister() {
     return new TaskControllerRegister(
         requestMappingHandlerMapping,
-        taskDelegator(taskExecutors),
+        taskDelegator(),
         classpathScanningTaskPayloadProcessor());
   }
 }
