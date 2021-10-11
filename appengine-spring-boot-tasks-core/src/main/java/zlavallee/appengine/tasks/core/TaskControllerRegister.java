@@ -3,6 +3,7 @@ package zlavallee.appengine.tasks.core;
 import static zlavallee.appengine.tasks.core.TasksSettings.CONTROLLER_METHOD_NAME;
 
 import java.util.Map;
+import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -29,6 +30,7 @@ public class TaskControllerRegister implements TaskPayloadRegister {
 
 
   @Override
+  @PostConstruct
   public void registerAnnotatedClasses() {
     processor.findPayloadClasses().forEach(this::register);
   }

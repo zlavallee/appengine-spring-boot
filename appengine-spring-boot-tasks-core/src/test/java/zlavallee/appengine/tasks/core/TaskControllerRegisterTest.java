@@ -19,6 +19,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import zlavallee.anotherpackage.TestPayloadThree;
 import zlavallee.appengine.tasks.core.TaskControllerRegisterTest.TaskControllerRegisterTestConfiguration;
 import zlavallee.appengine.tasks.core.payload.TestPayloadOne;
 import zlavallee.appengine.tasks.core.payload.TestPayloadTwo;
@@ -38,21 +39,19 @@ class TaskControllerRegisterTest {
 
   @Test
   public void testRegister() throws Exception {
-    taskControllerRegister.register(TestPayloadOne.class);
+    taskControllerRegister.register(TestPayloadThree.class);
 
     mockMvc.perform(
-            post(TasksSettings.HANDLER_URL + "/payloadOne")
-                .content("{\"message\":\"message content\"}")
+            post(TasksSettings.HANDLER_URL + "/payloadThree")
+                .content("{}")
                 .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
 
-    verify(mockTaskDelegator).delegate(new TestPayloadOne("message content"));
+    verify(mockTaskDelegator).delegate(new TestPayloadThree());
   }
 
   @Test
   public void testRegisterAnnotatedClasses() throws Exception {
-    taskControllerRegister.registerAnnotatedClasses();
-
     mockMvc.perform(
             post(TasksSettings.HANDLER_URL + "/payloadOne")
                 .content("{\"message\":\"message content\"}")
