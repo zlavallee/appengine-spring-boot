@@ -24,6 +24,8 @@ public abstract class AbstractBaseTaskSubmissionService implements TaskSubmissio
       throw new IllegalArgumentException("Task submission payload must be annotated with @Payload");
     }
 
+    logger.info("Submitting task to url: {}", task.getSubmissionUrl());
+    
     submitTask(task);
 
     logger.trace("Task submitted successfully. {}", payload);
