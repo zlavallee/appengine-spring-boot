@@ -13,6 +13,11 @@ public class SomethingTaskExecutor implements TaskExecutor<Something> {
   private long executionCount;
 
   @Override
+  public Class<Something> getPayloadClass() {
+    return Something.class;
+  }
+
+  @Override
   public void execute(Something payload) {
     executionCount++;
 

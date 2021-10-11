@@ -8,18 +8,21 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import zlavallee.appengine.tasks.core.TaskDelegatorTest.TaskDelegatorTestConfiguration;
 import zlavallee.appengine.tasks.core.exception.TaskDelegationException;
+import zlavallee.appengine.tasks.core.payload.TestPayloadOne;
 
 @SpringBootTest
+@EnableAutoConfiguration
 @Import(TaskDelegatorTestConfiguration.class)
 public class TaskDelegatorTest {
 
@@ -29,6 +32,8 @@ public class TaskDelegatorTest {
   private TestTaskExecutor<Date> dateTaskExecutor;
   @Autowired
   private TaskDelegator taskDelegator;
+  @Autowired
+  private ConcreteExecutor concreteExecutor;
 
   @AfterEach
   public void tearDown() {
@@ -38,16 +43,16 @@ public class TaskDelegatorTest {
 
   @Test
   public void testDelegate() {
-    taskDelegator.delegate("test payload");
+    taskDelegator.delegate(new TestPayloadOne("message"));
 
-    assertEquals(1, stringTaskExecutor.payloads.size());
-    assertEquals("test payload", stringTaskExecutor.payloads.get(0));
+    assertEquals(1, concreteExecutor.payloads.size());
+    assertEquals(new TestPayloadOne("message"), concreteExecutor.payloads.get(0));
 
     Date date = new Date();
 
     taskDelegator.delegate(date);
 
-    assertEquals(1, stringTaskExecutor.payloads.size());
+    assertEquals(1, concreteExecutor.payloads.size());
     assertEquals(1, dateTaskExecutor.payloads.size());
     assertEquals(date, dateTaskExecutor.payloads.get(0));
   }
@@ -60,48 +65,58 @@ public class TaskDelegatorTest {
 
     assertThat(exception.getMessage(), containsString("No executor found"));
   }
-
-  @Test
-  public void testDelegateMultipleExecutors() {
-    TaskDelegationException exception = assertThrows(TaskDelegationException.class, () -> {
-      taskDelegator.delegate(1);
-    });
-
-    assertThat(exception.getMessage(), containsString("Multiple executors found"));
-  }
-
+  
   @Configuration
   static class TaskDelegatorTestConfiguration {
 
     @Bean
-    public TaskDelegator taskDelegator() {
-      return new TaskDelegator();
+    public TaskDelegator taskDelegator(Set<TaskExecutor<?>> taskExecutors) {
+      return new TaskDelegator(taskExecutors);
     }
 
     @Bean
     public TestTaskExecutor<String> stringTaskExecutor() {
-      return new TestTaskExecutor<>();
+      return new TestTaskExecutor<>(String.class);
     }
 
     @Bean
     public TestTaskExecutor<Date> dateTaskExecutor() {
-      return new TestTaskExecutor<>();
+      return new TestTaskExecutor<>(Date.class);
     }
 
     @Bean
     public TestTaskExecutor<Integer> firstIntegerTaskExecutor() {
-      return new TestTaskExecutor<>();
+      return new TestTaskExecutor<>(Integer.class);
     }
 
     @Bean
-    public TestTaskExecutor<Integer> secondIntegerTaskExecutor() {
-      return new TestTaskExecutor<>();
+    public ConcreteExecutor concreteExecutor() {
+      return new ConcreteExecutor();
     }
   }
 
-  static class TestTaskExecutor<T> implements TaskExecutor<T> {
+  static class ConcreteExecutor implements TaskExecutor<TestPayloadOne> {
+
+    private final List<TestPayloadOne> payloads = new ArrayList<>();
+
+    @Override
+    public Class<TestPayloadOne> getPayloadClass() {
+      return TestPayloadOne.class;
+    }
+
+    @Override
+    public void execute(TestPayloadOne payload) {
+      payloads.add(payload);
+    }
+  }
+
+  static class TestTaskExecutor<T> extends TaskExecutorSupport<T> {
 
     private final List<T> payloads = new ArrayList<>();
+
+    public TestTaskExecutor(Class<T> payloadClass) {
+      super(payloadClass);
+    }
 
     @Override
     public void execute(T payload) {
