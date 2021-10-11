@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import zlavallee.appengine.autoconfigure.condition.ConditionalOnAppEngine;
 import zlavallee.appengine.core.AppEngineApplicationService;
 import zlavallee.appengine.core.AppEngineApplicationServiceImpl;
 import zlavallee.appengine.core.AppEngineEnvironment;
@@ -14,7 +15,7 @@ import zlavallee.appengine.core.admin.ApplicationAdminImpl;
 
 @Configuration
 @Import(CoreAppEngineConfiguration.class)
-@ConditionalOnProperty(name = AppEngineEnvironment.APPLICATION_ID_KEY)
+@ConditionalOnAppEngine
 public class CloudAppEngineConfiguration {
 
   @Autowired

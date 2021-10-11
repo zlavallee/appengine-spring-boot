@@ -5,26 +5,40 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Collection;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import zlavallee.anotherpackage.TestPayloadThree;
 import zlavallee.appengine.tasks.core.payload.TestPayloadOne;
 import zlavallee.appengine.tasks.core.payload.TestPayloadTwo;
 
-class ClasspathScanningTaskPayloadProcessorTest {
+@SpringBootTest
+@EnableAutoConfiguration
+public class ClasspathScanningTaskPayloadProcessorTest {
 
+  @Autowired
   private ClasspathScanningTaskPayloadProcessor processor;
-
-  @BeforeEach
-  public void setup() {
-    processor = new ClasspathScanningTaskPayloadProcessor();
-    processor.addBasePackage("zlavallee.appengine.tasks.core.payload");
-  }
 
   @Test
   public void testFindPayloadClasses() {
     Collection<Class<?>> classes = processor.findPayloadClasses();
 
-    assertEquals(2, classes.size());
-    assertThat(classes, containsInAnyOrder(TestPayloadOne.class, TestPayloadTwo.class));
+    assertEquals(3, classes.size());
+    assertThat(classes, containsInAnyOrder(TestPayloadOne.class, TestPayloadTwo.class,
+        TestPayloadThree.class));
+  }
+
+  @Configuration
+  static class ClasspathScanningTaskPayloadProcessorConfiguration {
+
+    @Bean
+    public ClasspathScanningTaskPayloadProcessor processor() {
+      ClasspathScanningTaskPayloadProcessor processor = new ClasspathScanningTaskPayloadProcessor();
+      processor.addBasePackage("zlavallee.anotherpackage");
+      return processor;
+    }
   }
 }

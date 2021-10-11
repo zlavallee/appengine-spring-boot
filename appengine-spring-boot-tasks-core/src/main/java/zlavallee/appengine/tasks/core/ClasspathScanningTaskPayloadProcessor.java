@@ -41,6 +41,9 @@ public class ClasspathScanningTaskPayloadProcessor extends ApplicationObjectSupp
   }
 
   public void setBasePackages(List<String> basePackages) {
+    if (basePackages == null) {
+      this.basePackages = new ArrayList<>();
+    }
     this.basePackages = basePackages;
   }
 
@@ -49,6 +52,10 @@ public class ClasspathScanningTaskPayloadProcessor extends ApplicationObjectSupp
   }
 
   public void addBasePackages(Collection<String> basePackages) {
+    if (basePackages == null) {
+      return;
+    }
+
     this.basePackages.addAll(basePackages);
   }
 
@@ -70,12 +77,9 @@ public class ClasspathScanningTaskPayloadProcessor extends ApplicationObjectSupp
   }
 
   private Stream<String> getPackagesToScan() {
-    if (basePackages.size() > 0) {
-      return basePackages.stream();
-    }
-
-    return AutoConfigurationPackages.get(beanFactory)
-        .stream();
+    return Stream.concat(
+        AutoConfigurationPackages.get(beanFactory)
+            .stream(), basePackages.stream());
   }
 
   private Class<?> getClass(String name) {
